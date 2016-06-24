@@ -1,6 +1,5 @@
 # StringSpliter
 split stirng as input size
-
 Demo:
   	StringSpliter spliter = new StringSpliter();
 	DemoEntity entity = new DemoEntity();
