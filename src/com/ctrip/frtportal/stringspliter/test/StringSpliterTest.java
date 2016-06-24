@@ -1,4 +1,4 @@
-package com.ctrip.stringspliter.test;
+package com.ctrip.frtportal.stringspliter.test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.ctrip.stringspliter.StringSpliter;
+import com.ctrip.frtportal.stringspliter.StringSpliter;
 
 import static org.junit.Assert.*;
 
