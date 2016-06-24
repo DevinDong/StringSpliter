@@ -15,7 +15,7 @@ split stirng as input size
 	Map<String, String> map = spliter.merge(list);	
 	String value = map.get(entity.getId());	
 	System.out.println(value);	
-### output:<br>
+### output:
   111-1/3:12345<br>
   111-2/3:67890<br>
   111-3/3:111<br>
