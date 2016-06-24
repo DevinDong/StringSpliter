@@ -1,6 +1,6 @@
-String Spliter （java version）
+String Spliter 
 =========================================================
-split stirng as input size
+split stirng as input size（java version）
 
 ### Demo:
   	StringSpliter spliter = new StringSpliter();
