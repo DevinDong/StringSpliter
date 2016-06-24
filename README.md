@@ -1,4 +1,4 @@
-String Spliter
+String Spliter （java version）
 =========================================================
 split stirng as input size
 
