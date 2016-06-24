@@ -3,11 +3,12 @@ package com.ctrip.stringspliter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * 字符串拆分合并类
@@ -16,7 +17,7 @@ public class StringSpliter {
 
     class StringSplitPOJO {
 
-	private String messageId;
+	private String messageKey;
 	// 分子
 	private int numerator;
 	// 分母
@@ -24,12 +25,12 @@ public class StringSpliter {
 	// 值
 	private String value;
 
-	public String getMessageId() {
-	    return messageId;
+	public String getMessageKey() {
+	    return messageKey;
 	}
 
-	public void setMessageId(String messageId) {
-	    this.messageId = messageId;
+	public void setMessageKey(String msgKey) {
+	    this.messageKey = msgKey;
 	}
 
 	public int getNumerator() {
@@ -58,7 +59,7 @@ public class StringSpliter {
 
 	@Override
 	public String toString() {
-	    return String.format("%s-%s/%s:%s", this.messageId, this.numerator, this.denominator, this.value);
+	    return String.format("%s-%s/%s:%s", this.messageKey, this.numerator, this.denominator, this.value);
 	}
     }
 
@@ -72,11 +73,10 @@ public class StringSpliter {
     /**
      * 拆分字符串
      **/
-    public List<String> split(String input, int size) {
+    public List<String> split(String key, String input, int size) {
 	if (size <= 0) {
 	    return new ArrayList<>();
 	}
-	String id = UUID.randomUUID().toString().replace("-", "");
 	double d = (double) input.length() / (double) size;
 	int count = (int) Math.ceil(d);
 	List<String> ret = new ArrayList<>(count);
@@ -89,11 +89,11 @@ public class StringSpliter {
 		    value += input.charAt(index);
 		}
 	    }
-	    dto.setMessageId(id);
+	    dto.setMessageKey(key);
 	    dto.setValue(value);
 	    dto.setNumerator(i + 1);
 	    dto.setDenominator(count);
-	    String formatValue = String.format("%s-%s/%s:%s", dto.getMessageId(), dto.getNumerator(), dto.getDenominator(), dto.getValue());
+	    String formatValue = String.format("%s-%s/%s:%s", dto.getMessageKey(), dto.getNumerator(), dto.getDenominator(), dto.getValue());
 	    ret.add(formatValue);
 	}
 	return ret;
@@ -102,12 +102,12 @@ public class StringSpliter {
     /**
      * 合并字符串
      **/
-    public List<String> merge(List<String> inputList) {
+    public Map<String, String> merge(List<String> inputList) {
 	if (inputList == null || inputList.isEmpty()) {
-	    return new ArrayList<>();
+	    return new HashMap<>();
 	}
 	List<StringSplitPOJO> pojos = convertToSplitDtos(inputList);
-	List<String> retList = stringSplitPOJOToStringList(pojos);
+	Map<String, String> retList = stringSplitPOJOToStringList(pojos);
 	return retList;
     }
 
@@ -129,7 +129,7 @@ public class StringSpliter {
 	    if (arrays.length != 2) {
 		throw new IllegalArgumentException();
 	    }
-	    dto.setMessageId(arraysHeader[0]);
+	    dto.setMessageKey(arraysHeader[0]);
 	    String[] fractionArray = arraysHeader[1].split("/");
 	    if (fractionArray.length != 2) {
 		throw new IllegalArgumentException();
@@ -141,12 +141,12 @@ public class StringSpliter {
 	return dtoList;
     }
 
-    private List<String> stringSplitPOJOToStringList(List<StringSplitPOJO> pojos) {
-	List<String> retList = new ArrayList<>();
+    private Map<String, String> stringSplitPOJOToStringList(List<StringSplitPOJO> pojos) {
+	Map<String, String> retMap = new HashMap<>();
 	Set<String> groups = new HashSet<>();
 	for (StringSplitPOJO pojo : pojos) {
-	    if (!groups.contains(pojo.getMessageId())) {
-		groups.add(pojo.getMessageId());
+	    if (!groups.contains(pojo.getMessageKey())) {
+		groups.add(pojo.getMessageKey());
 	    }
 	}
 	Iterator<String> iterator = groups.iterator();
@@ -154,7 +154,7 @@ public class StringSpliter {
 	    String group = (String) iterator.next();
 	    List<StringSplitPOJO> itemPojos = new ArrayList<>();
 	    for (StringSplitPOJO pojo : pojos) {
-		if (group.equals(pojo.getMessageId())) {
+		if (group.equals(pojo.getMessageKey())) {
 		    itemPojos.add(pojo);
 		}
 	    }
@@ -171,12 +171,12 @@ public class StringSpliter {
 	    }
 	    // check if complete
 	    if (count == itemPojos.get(0).getDenominator()) {
-		retList.add(sb.toString());
+		retMap.put(itemPojos.get(0).getMessageKey(), sb.toString());
 	    } else {
-		throw new IllegalArgumentException("消息不完整.messageId:" + itemPojos.get(0).getMessageId());
+		throw new IllegalArgumentException("消息不完整.MessageKey:" + itemPojos.get(0).getMessageKey());
 	    }
 	}
-	return retList;
+	return retMap;
     }
 
 }
